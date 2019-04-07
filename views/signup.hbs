@@ -1,0 +1,22 @@
+<div class="container">
+    <form class="form" method="POST" action="/users/signup">
+        <h1> Cadastrar </h1>
+        <div class="form-group">
+            <label for="persondata"> PersonData </label>
+            <input type="text" class="form-control" id="persondata" name="persondata">
+        </div>
+        <div class="form-group">
+            <label for="username"> Username </label>
+            <input type="text" class="form-control" id="username" name="username">
+        </div>
+        <div class="form-group">
+            <label for="password"> Password </label>
+            <input type="password" class="form-control" id="password" name="password">
+        </div>
+        <button type="submit" class="btn btn-info">
+            Sign Up
+        </button>
+    </form>
+    <br>
+    <p>{{error}}</p>
+</div>
