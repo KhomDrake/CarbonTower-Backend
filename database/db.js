@@ -26,6 +26,7 @@ let T_GAME = "T_GAME";
 let T_USER_ROLE = "T_USER_ROLE";
 let T_ROLE = "T_ROLE";
 let T_USER = "T_USER";
+let T_INVITE_PLAYER = "T_INVITE_PLAYER";
 
 let jogador = 3;
 let administrador = 2;
@@ -75,9 +76,53 @@ module.exports.Campeonato = {
     },
     getCampeonatosEmpresa: (userData) => {
         let idUser = userData;
-        return SQLQuery(`select * from T_USER, T_USER_ROLE, T_CHAMPIONSHIP where T_USER.idUser = '${idUser}' 
+        return SQLQuery(`select * from T_USER, ${T_GAME}, T_USER_ROLE, T_CHAMPIONSHIP where T_USER.idUser = '${idUser}' 
         and T_USER_ROLE.idUser_fk = '${idUser}' and T_USER_ROLE.idRole_fk = 1 and 
-        T_CHAMPIONSHIP.owner_fk = '${idUser}'`);
+        T_CHAMPIONSHIP.owner_fk = T_USER_ROLE.idUserRole and ${T_GAME}.idGame = ${T_CHAMPIONSHIP}.idGame_fk`);
+    },
+    getCampeonatoEmpresa: (userData, idUserRole, idCampeonato) => {
+        let idUser = userData;
+        return SQLQuery(`select * from T_USER, ${T_GAME}, T_USER_ROLE, T_CHAMPIONSHIP where T_USER.idUser = '${idUser}' 
+        and T_USER_ROLE.idUser_fk = '${idUser}' and T_USER_ROLE.idRole_fk = 1 and 
+        T_CHAMPIONSHIP.owner_fk = ${idUserRole} and ${T_GAME}.idGame = ${idCampeonato}`);
+    },
+    insertInvite: (championshipId, playerId) => {
+        let user;
+        return SQLQuery(`select * from ${T_USER_ROLE} where 
+                ${T_USER_ROLE}.idUser_fk = '${playerId}' and ${T_USER_ROLE}.idRole_fk = ${jogador}`)
+            .then(resultado => {
+                if(resultado.length == 0) {
+                    return new Error("Não existe esse usuario");
+                } else {
+                    user = resultado[0];
+                    return SQLQuery(`select * from  ${T_INVITE_PLAYER} where ${T_INVITE_PLAYER}.idPlayer_fk = ${user.idUserRole}
+                        and ${T_INVITE_PLAYER}.idChampionship_fk = ${championshipId}`)
+                }
+            })
+            .then(resultado => {
+                if(resultado.length != 0) {
+                    return new Error("Usuário já tem o convite");
+                } else {
+                    return SQLQuery(`insert into ${T_INVITE_PLAYER} values (${user.idUserRole}, ${championshipId}, 0, 0)`)
+                }
+            });
+    },
+    getInvitePlayer: (idUser) => {
+        return SQLQuery(`select * from ${T_USER_ROLE} where ${T_USER_ROLE}.idUser_fk = '${idUser}' and 
+            ${T_USER_ROLE}.idRole_fk = ${jogador}`).then(jogador => {
+                console.log(jogador);
+                let idUserRole = jogador[0].idUserRole;
+                console.log(idUserRole);
+                
+                return SQLQuery(`select * from ${T_INVITE_PLAYER}, ${T_CHAMPIONSHIP} 
+                    where ${T_INVITE_PLAYER}.idPlayer_fk = ${idUserRole} and 
+                        ${T_CHAMPIONSHIP}.idChampionship = ${T_INVITE_PLAYER}.idChampionship_fk and
+                        ${T_INVITE_PLAYER}.alreadyAnswered = 0`);
+            })
+            .then(resultado => {
+                console.log(resultado);
+                return resultado;
+            })
     }
 }
 
