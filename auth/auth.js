@@ -9,7 +9,7 @@ module.exports = function (passport)
     });
 
     passport.deserializeUser(function (usuario, done) {
-        db.getUserData(usuario.userData[0])
+        db.getUserData(usuario.idUser)
             .then(user => {
                 done(null, user[0]);
             })
@@ -33,14 +33,14 @@ module.exports = function (passport)
                     result = user[0];
                         
                     let isEqual = encrypt.ComparePassword(result.userPassword, password);
-                    
+
                     if(!isEqual)
                     {
                         return done(null, false);
                     }
                     else
                     {
-                        return db.getUserData(result.userData)
+                        return db.getUserData(result.idUser)
                     }
                 })
                 .then(resultado => {

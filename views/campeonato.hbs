@@ -5,10 +5,30 @@
             <label for="username"> Nome </label>
             <input type="text" class="form-control" id="username" name="username">
         </div>
+        <div class="form-group">
+            <label for="games"> Jogos </label>
+            <select name="games" id="games" required>
+              <option value="1">League of Legends</option>
+              <option value="2">Fortnite</option>
+              <option value="3">Starcraft 2</option>
+              <option value="4">Smite</option>
+              <option value="5">Heartstone</option>
+              <option value="6">Smite</option>
+              <option value="7">Counter Striker: Global Offensive</option>
+              <option value="8">Dota 2</option>
+            </select>
+        </div>
         <button type="submit" class="btn btn-info">
             Cadastrar
         </button>
     </form>
     <br>
     <p>{{error}}</p>
+
+    <h1>Campeonatos Criados</h1>
+    <div id="campeonato">
+
+    </div>
+
+    <script src="/javascript/showChampionship.js"></script>
 </div>

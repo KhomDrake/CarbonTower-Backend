@@ -3,7 +3,6 @@ let CryptoJS = require('crypto-js');
 module.exports.Encrypto = {
     EncryptoPassword: (password) => {
         let cipherText = CryptoJS.AES.encrypt(password, GetInverseOfText(password));
-        
         return cipherText.toString();
     },
     ComparePassword: (passwordBank, password) => {
