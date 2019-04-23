@@ -53,6 +53,15 @@ router.get("/:id/players", authenticate.ensureLoggedIn('/users/login'), (req, re
         })
 });
 
+router.get("player/:idUserRole/:idChampionship", authenticate.ensureLoggedIn('/users/login'), (req, res) => {
+    let user = req.session.passport.user;
+    if(user.nmRole != "Empresa") {
+        res.redirect(`/`);
+    }
+
+    
+});
+
 router.post("/invite/:id/create", authenticate.ensureLoggedIn('/users/login'), (req, res) => {
     let user = req.session.passport.user;
 

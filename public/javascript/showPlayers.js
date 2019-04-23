@@ -10,6 +10,8 @@ fetch(`/campeonato/${idChamp.innerHTML}/players`)
             let br = document.createElement('br');
             let name = document.createElement('h2');
             name.innerHTML = "Nome: " + player.nmUser;
+            let detalhes = document.createElement('h3');
+            detalhes.innerHTML = `<a href="campeonato/player/${player.idUserRole}/${player.idChampionship}"> Detalhes </a>`;
             div.appendChild(br);
             div.appendChild(name);
             divPlayers.appendChild(div);
