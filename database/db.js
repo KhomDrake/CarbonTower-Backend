@@ -82,9 +82,9 @@ module.exports.Campeonato = {
     },
     getCampeonatoEmpresa: (userData, idUserRole, idCampeonato) => {
         let idUser = userData;
-        return SQLQuery(`select * from T_USER, ${T_GAME}, T_USER_ROLE, T_CHAMPIONSHIP where T_USER.idUser = '${idUser}' 
-        and T_USER_ROLE.idUser_fk = '${idUser}' and T_USER_ROLE.idRole_fk = 1 and 
-        T_CHAMPIONSHIP.owner_fk = ${idUserRole} and ${T_GAME}.idGame = ${idCampeonato}`);
+        return SQLQuery(`select * from ${T_GAME}, ${T_USER_ROLE}, ${T_CHAMPIONSHIP} where T_USER_ROLE.idUser_fk = '${idUser}' 
+        and T_USER_ROLE.idRole_fk = 1 and T_CHAMPIONSHIP.owner_fk = ${idUserRole} and T_CHAMPIONSHIP.idChampionship = ${idCampeonato}
+        and ${T_GAME}.idGame = ${idCampeonato}`);
     },
     insertInvite: (championshipId, playerId) => {
         let user;
@@ -110,10 +110,7 @@ module.exports.Campeonato = {
     getInvitePlayer: (idUser) => {
         return SQLQuery(`select * from ${T_USER_ROLE} where ${T_USER_ROLE}.idUser_fk = '${idUser}' and 
             ${T_USER_ROLE}.idRole_fk = ${jogador}`).then(jogador => {
-                console.log(jogador);
                 let idUserRole = jogador[0].idUserRole;
-                console.log(idUserRole);
-                
                 return SQLQuery(`select * from ${T_INVITE_PLAYER}, ${T_CHAMPIONSHIP} 
                     where ${T_INVITE_PLAYER}.idPlayer_fk = ${idUserRole} and 
                         ${T_CHAMPIONSHIP}.idChampionship = ${T_INVITE_PLAYER}.idChampionship_fk and
@@ -123,6 +120,41 @@ module.exports.Campeonato = {
                 console.log(resultado);
                 return resultado;
             })
+    },
+    getAllChampionship: () => {
+        return SQLQuery(`select * from ${T_CHAMPIONSHIP};`);
+    },
+    acceptedInvite: (idChampionship, idUser) => {
+        let idUserRole;
+        return SQLQuery(`select * from ${T_USER_ROLE} where ${T_USER_ROLE}.idUser_fk = '${idUser}' and 
+            ${T_USER_ROLE}.idRole_fk = ${jogador}`).then(jogador => {
+                idUserRole = jogador[0].idUserRole;
+                return SQLQuery(`update T_INVITE_PLAYER set T_INVITE_PLAYER.accepted = 1,
+                T_INVITE_PLAYER.alreadyAnswered = 1 where T_INVITE_PLAYER.idPlayer_fk = ${idUserRole} 
+                and T_INVITE_PLAYER.idChampionship_fk = ${idChampionship};`);
+            })
+            .then(resultado => {
+                return SQLQuery(`insert into ${T_PLAYER_IN_CHAMPIONSHIP} values (${idUserRole}, ${idChampionship})`);
+            });
+    },
+    refuseInvite: (idChampionship, idUser) => {
+        return SQLQuery(`select * from ${T_USER_ROLE} where ${T_USER_ROLE}.idUser_fk = '${idUser}' and 
+            ${T_USER_ROLE}.idRole_fk = ${jogador}`).then(jogador => {
+                let idUserRole = jogador[0].idUserRole;
+                return SQLQuery(`update T_INVITE_PLAYER set T_INVITE_PLAYER.accepted = 0,
+                T_INVITE_PLAYER.alreadyAnswered = 1 where T_INVITE_PLAYER.idPlayer_fk = ${idUserRole} 
+                and T_INVITE_PLAYER.idChampionship_fk = ${idChampionship};`);
+            });
+    },
+    getPlayersChampionship: (idChampionship, idUserRole) => {
+        console.log(idChampionship);
+        console.log(idUserRole);
+        
+        return SQLQuery(`select * from T_USER, T_USER_ROLE, T_CHAMPIONSHIP, T_PLAYER_IN_CHAMPIONSHIP 
+            where T_CHAMPIONSHIP.owner_fk = ${idUserRole} and T_USER.idUser = T_USER_ROLE.idUser_fk
+            and T_PLAYER_IN_CHAMPIONSHIP.idChampionship_fk = ${idChampionship}
+            and T_CHAMPIONSHIP.idChampionship = ${idChampionship}
+            and T_USER_ROLE.idUserRole = T_PLAYER_IN_CHAMPIONSHIP.idPlayer_fk;`);
     }
 }
 

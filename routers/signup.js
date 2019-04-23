@@ -5,8 +5,6 @@ let crypto = require('../encrypt/crypto').Encrypto;
 const authenticate = require('connect-ensure-login');
 
 router.get("/", authenticate.ensureLoggedOut('/'), (req, res) => {
-    console.log(db);
-    
     res.render('signup');
 });
 

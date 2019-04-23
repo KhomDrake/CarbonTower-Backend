@@ -6,6 +6,7 @@ fetch("/campeonato/get")
         console.log(campeonatos);
         campeonatos.forEach(campeonato => {
             let div = document.createElement('div');
+            div.style.border = "2px solid red"
             let br = document.createElement('br');
             let name = document.createElement('h2');
             name.innerHTML = "Nome: " + campeonato.nmChampionship;

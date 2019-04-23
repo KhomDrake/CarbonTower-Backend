@@ -6,7 +6,6 @@ const authenticate = require('connect-ensure-login');
 
 router.post('/signup', authenticate.ensureLoggedIn('/users/login'), function(req, res, next) {
     let user = req.session.passport.user;
-    console.log(req.body);
     db.insertCampeonato({ name: req.body.username, owner: user.idRole, game: req.body.games})
         .then(resultado => {
             res.redirect('/')
@@ -23,6 +22,9 @@ router.get("/get", authenticate.ensureLoggedIn('/users/login'), (req, res) => {
 
 router.get("/detail/:id", authenticate.ensureLoggedIn('/users/login'), (req, res) => {
     let user = req.session.passport.user;
+    console.log(user.idUser);
+    console.log(user.idUserRole);
+    console.log(req.params.id);
     db.getCampeonatoEmpresa(user.idUser, user.idUserRole, req.params.id)
         .then(campeonato => {
             if(campeonato.length == 0) {
@@ -42,6 +44,15 @@ router.get("/detail/:id", authenticate.ensureLoggedIn('/users/login'), (req, res
         })
 });
 
+router.get("/:id/players", authenticate.ensureLoggedIn('/users/login'), (req, res) => {
+    let user = req.session.passport.user;
+    db.getPlayersChampionship(req.params.id, user.idUserRole)
+        .then(players => {
+            console.log(players);
+            res.json(players);
+        })
+});
+
 router.post("/invite/:id/create", authenticate.ensureLoggedIn('/users/login'), (req, res) => {
     let user = req.session.passport.user;
 
@@ -57,6 +68,32 @@ router.post("/invite/:id/create", authenticate.ensureLoggedIn('/users/login'), (
             console.log(error);
             res.redirect(`/campeonato/detail/${req.params.id}`);
         })
+});
+
+router.get("/invite/:id/accept", authenticate.ensureLoggedIn('/users/login'), (req, res) => {
+    let user = req.session.passport.user;
+
+    if(user.nmRole != "Jogador") {
+        res.redirect(`/`);
+    }
+
+    db.acceptedInvite(req.params.id, user.idUser)
+        .then(resultado => {
+            res.redirect("/")
+        });
+});
+
+router.get("/invite/:id/refuse", authenticate.ensureLoggedIn('/users/login'), (req, res) => {
+    let user = req.session.passport.user;
+
+    if(user.nmRole != "Jogador") {
+        res.redirect(`/`);
+    }
+
+    db.refuseInvite(req.params.id, user.idUser)
+        .then(resultado => {
+            res.redirect("/")
+        });
 });
 
 router.get("/invite/get", authenticate.ensureLoggedIn('/users/login'), (req, res) => {

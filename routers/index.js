@@ -13,12 +13,7 @@ router.get('/', authenticate.ensureLoggedIn('/users/login'), function(req, res, 
   }
   else 
   {
-    db.getCampeonatosParticipo(user.idUser)
-    .then(resultado => {
-      console.log(resultado);
-      res.render('index');
-    })
-    .catch(err => console.log(err));
+    res.render('index');
   }
   
 });

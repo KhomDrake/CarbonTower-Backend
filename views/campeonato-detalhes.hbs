@@ -2,7 +2,8 @@
 <h1>Nome Campeonato: {{nmChampionship}}</h1>
 <h1>Game: {{nmGame}}</h1>
 
-<h1>{{idChampionship}}</h1>
+
+<p style="display:none" id="idChamp" >{{idChampionship}}</p>
 
 <div class="container">
     <form class="form" method="POST" action="/campeonato/invite/{{idChampionship}}/create">
@@ -17,3 +18,9 @@
     </form>
     <br>
 </div>
+
+<div id="players">
+
+</div>
+
+<script src="/javascript/showPlayers.js"></script>
