@@ -4,6 +4,17 @@ let db = require("../database/db").Campeonato;
 
 const authenticate = require('connect-ensure-login');
 
+router.get("/player/:idUserRole/graphics/:idChampionship", (req, res) => {
+    let user = req.session.passport.user;
+    if(user.nmRole != "Empresa") 
+    {
+        res.redirect("/");
+    }
+    let idUserRole = 2;
+    let idChampionship = 1;    
+    res.render("graphics", { nmUser: user.nmUser });
+});
+
 router.post('/signup', authenticate.ensureLoggedIn('/users/login'), function(req, res, next) {
     let user = req.session.passport.user;
     db.insertCampeonato({ name: req.body.username, owner: user.idRole, game: req.body.games})
@@ -22,9 +33,6 @@ router.get("/get", authenticate.ensureLoggedIn('/users/login'), (req, res) => {
 
 router.get("/detail/:id", authenticate.ensureLoggedIn('/users/login'), (req, res) => {
     let user = req.session.passport.user;
-    console.log(user.idUser);
-    console.log(user.idUserRole);
-    console.log(req.params.id);
     db.getCampeonatoEmpresa(user.idUser, user.idUserRole, req.params.id)
         .then(campeonato => {
             if(campeonato.length == 0) {
@@ -38,7 +46,6 @@ router.get("/detail/:id", authenticate.ensureLoggedIn('/users/login'), (req, res
                     nmUser: campeonato[0].nmUser,
                     idChampionship: campeonato[0].idChampionship
                 }
-                console.log(information);
                 res.render("campeonato-detalhes", information);
             }
         })
@@ -48,18 +55,8 @@ router.get("/:id/players", authenticate.ensureLoggedIn('/users/login'), (req, re
     let user = req.session.passport.user;
     db.getPlayersChampionship(req.params.id, user.idUserRole)
         .then(players => {
-            console.log(players);
             res.json(players);
         })
-});
-
-router.get("player/:idUserRole/:idChampionship", authenticate.ensureLoggedIn('/users/login'), (req, res) => {
-    let user = req.session.passport.user;
-    if(user.nmRole != "Empresa") {
-        res.redirect(`/`);
-    }
-
-    
 });
 
 router.post("/invite/:id/create", authenticate.ensureLoggedIn('/users/login'), (req, res) => {
@@ -74,7 +71,6 @@ router.post("/invite/:id/create", authenticate.ensureLoggedIn('/users/login'), (
             res.redirect(`/campeonato/detail/${req.params.id}`);
         })
         .catch(error => {
-            console.log(error);
             res.redirect(`/campeonato/detail/${req.params.id}`);
         })
 });

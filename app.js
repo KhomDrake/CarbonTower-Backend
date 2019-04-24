@@ -28,5 +28,7 @@ app.use('/users/login', require('./routers/login'));
 app.use('/users/signup', require('./routers/signup'));
 app.use('/logout', require('./routers/logout'));
 app.use('/campeonato', require('./routers/campeonato'));
+app.use('/player', require('./routers/player'));
+app.use('/data', require('./routers/data'));
 
 module.exports = app;
