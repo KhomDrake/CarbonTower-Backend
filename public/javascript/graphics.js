@@ -28,7 +28,6 @@ let labelUse = 0;
     useCPU (131, 254, 252)
     tempCPU (131, 67, 252)
 */
-
 let configurationUse = {
     type: 'line',
     data: {
@@ -36,25 +35,39 @@ let configurationUse = {
             label: "Use Ram",
             type: 'line',
             backgroundColor: ['rgb(255, 0, 0)'],
-            fill: false
+            fill: false,
+            showLine: true,
+            borderColor: ['rgb(255, 0, 0)'],
+            borderWidth: 2
         },{
             label: "Use GPU",
             type: 'line',
             backgroundColor: ['rgb(3, 254, 0)'],
-            fill: false
+            fill: false,
+            borderColor: ['rgb(3, 254, 0)'],
+            borderWidth: 2
         },{
             label: "use Disc",
             type: 'line',
             backgroundColor: ['rgb(131, 254, 166)'],
-            fill: false
+            fill: false,
+            borderColor: ['rgb(131, 254, 166)'],
+            borderWidth: 2
         },{
             label: "use CPU",
             type: 'line',
             backgroundColor: ['rgb(131, 254, 252)'],
-            fill: false
+            fill: false,
+            borderColor: ['rgb(131, 254, 252)'],
+            borderWidth: 2
         }],
     },
     options: {
+        elements: {
+            line: {
+                tension : 0
+            }
+        },
         scales: {
             xAxes: [{
                 distribution: 'series',
@@ -85,15 +98,24 @@ let configurationTemp = {
             label: "Temperature GPU",
             type: 'line',
             backgroundColor: ['rgb(255, 148, 0)'],
-            fill: false
+            fill: false,
+            borderColor: ['rgb(255, 148, 0)'],
+            borderWidth: 2
         },{
             label: "Temperature CPU",
             type: 'line',
             backgroundColor: ['rgb(131, 67, 252)'],
+            borderColor: ['rgb(131, 67, 252)'],
+            borderWidth: 2,
             fill: false
         }],
     },
     options: {
+        elements: {
+            line: {
+                tension : 0
+            }
+        },
         scales: {
             xAxes: [{
                 distribution: 'series',
